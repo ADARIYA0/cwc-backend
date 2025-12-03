@@ -2,6 +2,8 @@ import express from "express";
 import logger from "./infrastructure/logging/logger";
 import morgan from "morgan";
 
+import authRoute from "./interfaces/http/express/routes/auth.route";
+
 const app = express();
 
 app.use(express.json());
@@ -23,6 +25,8 @@ app.use(
         },
     })
 );
+
+app.use("/api/auth", authRoute);
 
 app.get("/status", (req, res) => {
     res.status(200).json({

@@ -5,6 +5,25 @@ import fs from "fs";
 import { DatabaseConfig } from "../../../config/database";
 import logger from "../../logging/logger";
 
+let sslOption: false | { ca: string; rejectUnauthorized: boolean } = false;
+
+if (DatabaseConfig.sslEnabled) {
+    const resolved = path.resolve(process.cwd(), DatabaseConfig.caCertPath);
+
+    if (!fs.existsSync(resolved)) {
+        throw new Error(`SSL CA certificate not found at path: ${resolved}`);
+    }
+
+    const ca = fs.readFileSync(resolved, "utf8");
+
+    sslOption = {
+        ca,
+        rejectUnauthorized: true,
+    };
+
+    logger.info(`SSL is enabled and CA loaded from: ${resolved}`);
+}
+
 export const AppDataSource = new DataSource({
     type: "postgres",
     url: DatabaseConfig.url,
@@ -13,7 +32,9 @@ export const AppDataSource = new DataSource({
     entities: [path.join(__dirname, "entities/**/*.{ts,js}")],
     migrations: [path.join(__dirname, "migrations/**/*.{ts,js}")],
     subscribers: [],
-    extra: {},
+    extra: {
+        ssl: sslOption
+    },
 });
 
 export const initializeDataSource = async () => {
@@ -31,22 +52,6 @@ export const initializeDataSource = async () => {
                 "TYPEORM_LOGGING=true in production. Logging is automatically disabled for safety."
             );
         }
-    }
-
-    if (DatabaseConfig.sslEnabled) {
-        const ca = fs.readFileSync(
-            path.resolve(DatabaseConfig.caCertPath),
-            "utf8"
-        );
-
-        (AppDataSource.options.extra as any).ssl = {
-            ca,
-            rejectUnauthorized: true,
-        };
-
-        logger.info(
-            `SSL enabled using CA certificate: ${DatabaseConfig.caCertPath}`
-        );
     }
 
     await AppDataSource.initialize();
