@@ -1,10 +1,10 @@
 {
-  "name": "cwc-backend",
-  "version": "0.0.2",
-  "description": "CWC Innovation Backend w/TypeScript",
-  "homepage": "https://github.com/ADARIYA0/cwc-backend#readme",
+  "name": "GoCycle-backend",
+  "version": "0.0.3",
+  "description": "GoCycle Innovation Backend w/TypeScript",
+  "homepage": "https://github.com/ADARIYA0/GoCycle-backend#readme",
   "bugs": {
-    "url": "https://github.com/ADARIYA0/cwc-backend/issues"
+    "url": "https://github.com/ADARIYA0/GoCycle-backend/issues"
   },
   "repository": {
     "type": "git",
