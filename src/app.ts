@@ -1,5 +1,5 @@
 import express from "express";
-import logger from "./utils/logger";
+import logger from "./infrastructure/logging/logger";
 import morgan from "morgan";
 
 const app = express();

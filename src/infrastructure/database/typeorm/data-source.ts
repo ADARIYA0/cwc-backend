@@ -3,7 +3,7 @@ import { DataSource } from "typeorm";
 import path from "path";
 import fs from "fs";
 import { DatabaseConfig } from "../../../config/database";
-import logger from "../../../utils/logger";
+import logger from "../../logging/logger";
 
 export const AppDataSource = new DataSource({
     type: "postgres",

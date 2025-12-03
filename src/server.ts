@@ -1,7 +1,7 @@
 import { Env } from "./config/env";
 import { initializeDataSource } from "./infrastructure/database/typeorm/data-source";
 import app from "./app";
-import logger from "./utils/logger";
+import logger from "./infrastructure/logging/logger";
 
 const PORT = Number(Env.PORT || 5000);
 const HOST = "0.0.0.0";
