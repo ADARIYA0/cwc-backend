@@ -16,7 +16,6 @@ export class RegisterService {
 
         const password = await argon2.hash(dto.password);
 
-        // 3. create user
         const created = await this.userRepo.createAndSave({
             fullName: dto.fullName.trim(),
             email: dto.email.toLowerCase().trim(),
