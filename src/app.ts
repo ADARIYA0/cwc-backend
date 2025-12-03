@@ -1,4 +1,5 @@
 import express from "express";
+import applyCors from "./middlewares/cors.middleware";
 import logger from "./infrastructure/logging/logger";
 import morgan from "morgan";
 
@@ -7,6 +8,7 @@ import authRoute from "./interfaces/http/express/routes/auth.route";
 const app = express();
 
 app.use(express.json());
+app.use(applyCors);
 
 morgan.token("date", (req, res, tz) => {
     return new Date().toLocaleString("en-US", {
