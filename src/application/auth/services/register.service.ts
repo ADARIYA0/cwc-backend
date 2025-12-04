@@ -3,11 +3,12 @@ import argon2 from "argon2";
 import logger from "../../../infrastructure/logging/logger";
 import { RegisterDTO } from "../dto/register.dto";
 import { User } from "../../../infrastructure/database/typeorm/entities/User";
+import { UserAccountType } from "../../../domain/user/enums/account-type";
 
 export class RegisterService {
     constructor(private readonly userRepo: UserRepository) { }
 
-    async register(dto: RegisterDTO): Promise<Pick<User, "id" | "email" | "fullName" | "createdAt">> {
+    async register(dto: RegisterDTO): Promise<Pick<User, "id" | "email" | "fullName" | "accountType" | "createdAt">> {
         const existing = await this.userRepo.findByEmail(dto.email.toLowerCase().trim());
         if (existing) {
             logger.warn(`Registration attempt with existing email: ${dto.email}`);
@@ -19,7 +20,8 @@ export class RegisterService {
         const created = await this.userRepo.createAndSave({
             fullName: dto.fullName.trim(),
             email: dto.email.toLowerCase().trim(),
-            password
+            password,
+            accountType: dto.accountType ?? UserAccountType.BUYER,
         });
 
         logger.info(`User registered: ${created.id}`);
@@ -28,6 +30,7 @@ export class RegisterService {
             id: created.id,
             email: created.email,
             fullName: created.fullName,
+            accountType: created.accountType,
             createdAt: created.createdAt
         };
     }

@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Index } from "typeorm";
+import { UserAccountType } from "../../../../domain/user/enums/account-type";
 
 @Entity({ name: "users" })
 export class User {
@@ -14,6 +15,13 @@ export class User {
 
     @Column({ type: "text" })
     password!: string;
+
+    @Column({
+        type: "enum",
+        enum: UserAccountType,
+        default: UserAccountType.BUYER,
+    })
+    accountType!: UserAccountType;
 
     @CreateDateColumn({ type: "timestamptz" })
     createdAt!: Date;
