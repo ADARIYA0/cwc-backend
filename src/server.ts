@@ -1,22 +1,38 @@
 import { Env } from "./config/env";
 import { initializeDataSource } from "./infrastructure/database/typeorm/data-source";
+import { getRedisClient, closeRedisClient } from "./infrastructure/redis/client";
 import app from "./app";
 import logger from "./infrastructure/logging/logger";
 
 const PORT = Number(Env.PORT || 5000);
 const HOST = "0.0.0.0";
+const NODE_ENV = Env.NODE_ENV || 'development';
 
 (async () => {
     try {
         await initializeDataSource();
-        logger.info("Database initialization complete. Starting server...");
+        logger.info("Database initialization complete.");
+
+        await getRedisClient();
+        logger.info("Redis initialization complete.");
+
+        logger.info("Starting server...");
 
         const server = app.listen(PORT, HOST, () => {
-            logger.info(`Server running on http://${HOST}:${PORT}`);
+            logger.info(`Server running in ${NODE_ENV} mode on all interfaces (http://${HOST}:${PORT})`);
         });
 
-        const shutdown = (signal: string) => {
+        const shutdown = async (signal: string) => {
             logger.info(`Received ${signal}. Shutting down gracefully...`);
+
+            try {
+                await closeRedisClient();
+            } catch (err) {
+                logger.error("Error closing Redis connection", {
+                    error: err instanceof Error ? err.message : "Unknown error",
+                });
+            }
+
             server.close((err?: Error) => {
                 if (err) {
                     logger.error("Error during server close:", err);
