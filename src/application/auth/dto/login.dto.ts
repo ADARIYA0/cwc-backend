@@ -8,7 +8,6 @@ export interface LoginResponseDTO {
         id: string;
         email: string;
         fullName: string;
-        accountType: string;
     };
     tokens: {
         accessToken: string;
