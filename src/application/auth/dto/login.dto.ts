@@ -1,3 +1,5 @@
+import { UserAccountType } from "../../../domain/enums/UserAccountType";
+
 export interface LoginDTO {
     email: string;
     password: string;
@@ -8,6 +10,7 @@ export interface LoginResponseDTO {
         id: string;
         email: string;
         fullName: string;
+        accountType: UserAccountType;
     };
     tokens: {
         accessToken: string;

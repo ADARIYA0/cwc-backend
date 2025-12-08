@@ -15,31 +15,31 @@ export class Session {
     id!: string;
 
     @Index()
-    @Column({ name: "user_id", type: "uuid" })
+    @Column({ type: "uuid" })
     userId!: string;
 
     @ManyToOne(() => User, { onDelete: "CASCADE" })
-    @JoinColumn({ name: "user_id" })
+    @JoinColumn({ name: "userId" })
     user!: User;
 
-    @Column({ name: "refresh_token", type: "varchar", length: 255 })
+    @Column({ type: "varchar", length: 255 })
     refreshToken!: string;
 
-    @Column({ name: "device", type: "varchar", length: 100 })
+    @Column({ type: "varchar", length: 100 })
     device!: string;
 
-    @Column({ name: "ip_address", type: "varchar", length: 45 })
+    @Column({ type: "varchar", length: 45 })
     ipAddress!: string;
 
-    @Column({ name: "user_agent", type: "text" })
+    @Column({ type: "text" })
     userAgent!: string;
 
-    @Column({ name: "revoked", type: "boolean", default: false })
+    @Column({ type: "boolean", default: false })
     revoked!: boolean;
 
-    @CreateDateColumn({ name: "created_at", type: "timestamptz" })
+    @CreateDateColumn({ type: "timestamptz" })
     createdAt!: Date;
 
-    @Column({ name: "expires_at", type: "timestamptz" })
+    @Column({ type: "timestamptz" })
     expiresAt!: Date;
 }

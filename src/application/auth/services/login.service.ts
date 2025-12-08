@@ -86,6 +86,7 @@ export class LoginService {
                 id: user.id,
                 email: user.email,
                 fullName: user.fullName,
+                accountType: user.accountType,
             },
             tokens: {
                 accessToken,
