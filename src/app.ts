@@ -6,6 +6,7 @@ import morgan from "morgan";
 import authRoute from "./interfaces/http/express/routes/auth.route";
 import userRoute from "./interfaces/http/express/routes/user.route";
 import storeRoute from "./interfaces/http/express/routes/store.route";
+import productRoute from "./interfaces/http/express/routes/product.route";
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use(
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/stores", storeRoute);
+app.use("/api/products", productRoute);
 
 app.get("/status", (req, res) => {
     res.status(200).json({
