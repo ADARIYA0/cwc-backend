@@ -12,7 +12,6 @@ export class ProductService {
     ) { }
 
     async createProduct(userId: string, dto: CreateProductDTO): Promise<ProductResponseDTO> {
-        // Check if user is a seller
         const user = await this.userRepo.findById(userId);
         if (!user) {
             throw new Error("USER_NOT_FOUND");
@@ -23,7 +22,6 @@ export class ProductService {
             throw new Error("SELLER_ONLY");
         }
 
-        // Create the product
         const productData: {
             userId: string;
             name: string;
