@@ -5,6 +5,7 @@ export interface CreateProductDTO {
     name: string;
     description: string | undefined;
     category: ProductCategory;
+    subCategoryId: string | undefined;
     price: number;
     priceUnit: WeightUnit;
     priceUnitAmount: number;
@@ -19,6 +20,8 @@ export interface ProductResponseDTO {
     name: string;
     description: string | undefined;
     category: ProductCategory;
+    subCategoryId: string | undefined;
+    subCategoryName: string | undefined;
     price: number;
     priceUnit: WeightUnit;
     priceUnitAmount: number;

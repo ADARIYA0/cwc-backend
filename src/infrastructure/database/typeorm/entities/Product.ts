@@ -9,6 +9,7 @@ import {
     Index
 } from "typeorm";
 import { User } from "./User";
+import { SubCategory } from "./SubCategory";
 import { ProductCategory } from "../../../../domain/enums/ProductCategory";
 import { WeightUnit } from "../../../../domain/enums/WeightUnit";
 
@@ -35,6 +36,14 @@ export class Product {
     @Column({ type: "enum", enum: ProductCategory })
     category!: ProductCategory;
 
+    @Index()
+    @Column({ type: "uuid", nullable: true })
+    subCategoryId?: string;
+
+    @ManyToOne(() => SubCategory, { onDelete: "SET NULL", nullable: true })
+    @JoinColumn({ name: "subCategoryId" })
+    subCategory?: SubCategory;
+
     @Column({ type: "integer" })
     price!: number;
 
@@ -59,3 +68,4 @@ export class Product {
     @UpdateDateColumn({ type: "timestamptz" })
     updatedAt!: Date;
 }
+

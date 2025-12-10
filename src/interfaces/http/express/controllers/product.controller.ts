@@ -15,7 +15,7 @@ const productService = new ProductService(productRepo, userRepo);
 
 export async function createProductHandler(req: Request, res: Response) {
     const file = (req as any).file as Express.Multer.File | undefined;
-    
+
     try {
         const userId = req.user?.id;
         if (!userId) {
@@ -51,6 +51,7 @@ export async function createProductHandler(req: Request, res: Response) {
             name: parseResult.data.name,
             description: parseResult.data.description ?? undefined,
             category: parseResult.data.category,
+            subCategoryId: parseResult.data.subCategoryId ?? undefined,
             price: parseResult.data.price,
             priceUnit: parseResult.data.priceUnit,
             priceUnitAmount: parseResult.data.priceUnitAmount,

@@ -7,6 +7,7 @@ import authRoute from "./interfaces/http/express/routes/auth.route";
 import userRoute from "./interfaces/http/express/routes/user.route";
 import storeRoute from "./interfaces/http/express/routes/store.route";
 import productRoute from "./interfaces/http/express/routes/product.route";
+import subCategoryRoute from "./interfaces/http/express/routes/sub-category.route";
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/stores", storeRoute);
 app.use("/api/products", productRoute);
+app.use("/api/sub-categories", subCategoryRoute);
 
 app.get("/status", (req, res) => {
     res.status(200).json({

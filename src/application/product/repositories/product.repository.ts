@@ -10,24 +10,31 @@ export class ProductRepository {
     }
 
     async findById(id: string): Promise<Product | null> {
-        return await this.repo.findOne({ where: { id } });
+        return await this.repo.findOne({
+            where: { id },
+            relations: ["subCategory"],
+        });
     }
 
     async findByUserId(userId: string): Promise<Product[]> {
         return await this.repo.find({
             where: { userId },
+            relations: ["subCategory"],
             order: { createdAt: "DESC" },
         });
     }
 
     async findAll(): Promise<Product[]> {
         return await this.repo.find({
+            relations: ["subCategory"],
             order: { createdAt: "DESC" },
         });
     }
 
     async createAndSave(productData: Partial<Product>): Promise<Product> {
         const product = this.repo.create(productData);
-        return await this.repo.save(product);
+        const saved = await this.repo.save(product);
+        // Reload with relations
+        return await this.findById(saved.id) as Product;
     }
 }

@@ -26,6 +26,7 @@ export class ProductService {
             userId: string;
             name: string;
             category: typeof dto.category;
+            subCategoryId?: string;
             price: number;
             priceUnit: typeof dto.priceUnit;
             priceUnitAmount: number;
@@ -49,6 +50,10 @@ export class ProductService {
             productData.description = dto.description.trim();
         }
 
+        if (dto.subCategoryId) {
+            productData.subCategoryId = dto.subCategoryId;
+        }
+
         const product = await this.productRepo.createAndSave(productData);
 
         logger.info(`Product created by user ${userId}: ${product.id}`);
@@ -59,6 +64,8 @@ export class ProductService {
             name: product.name,
             description: product.description,
             category: product.category,
+            subCategoryId: product.subCategoryId,
+            subCategoryName: product.subCategory?.name,
             price: product.price,
             priceUnit: product.priceUnit,
             priceUnitAmount: product.priceUnitAmount,
@@ -80,6 +87,8 @@ export class ProductService {
             name: product.name,
             description: product.description,
             category: product.category,
+            subCategoryId: product.subCategoryId,
+            subCategoryName: product.subCategory?.name,
             price: product.price,
             priceUnit: product.priceUnit,
             priceUnitAmount: product.priceUnitAmount,
@@ -101,6 +110,8 @@ export class ProductService {
             name: product.name,
             description: product.description,
             category: product.category,
+            subCategoryId: product.subCategoryId,
+            subCategoryName: product.subCategory?.name,
             price: product.price,
             priceUnit: product.priceUnit,
             priceUnitAmount: product.priceUnitAmount,
