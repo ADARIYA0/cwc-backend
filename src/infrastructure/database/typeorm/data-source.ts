@@ -56,3 +56,12 @@ export const initializeDataSource = async () => {
     await AppDataSource.initialize();
     logger.info("Database connected successfully.");
 };
+
+export const closeDataSource = async (): Promise<void> => {
+    if (AppDataSource.isInitialized) {
+        await AppDataSource.destroy();
+        logger.info("Database connection disconnected successfully.");
+    } else {
+        logger.warn("Attempted to close database connection, but it was not initialized.");
+    }
+}

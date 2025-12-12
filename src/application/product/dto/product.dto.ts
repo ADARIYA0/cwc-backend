@@ -16,7 +16,8 @@ export interface CreateProductDTO {
 
 export interface ProductResponseDTO {
     id: string;
-    userId: string;
+    storeId: string;
+    storeName: string;
     name: string;
     description: string | undefined;
     category: ProductCategory;

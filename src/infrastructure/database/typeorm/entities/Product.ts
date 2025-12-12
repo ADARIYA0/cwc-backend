@@ -8,7 +8,7 @@ import {
     JoinColumn,
     Index
 } from "typeorm";
-import { User } from "./User";
+import { Store } from "./Store";
 import { SubCategory } from "./SubCategory";
 import { ProductCategory } from "../../../../domain/enums/ProductCategory";
 import { WeightUnit } from "../../../../domain/enums/WeightUnit";
@@ -20,11 +20,11 @@ export class Product {
 
     @Index()
     @Column({ type: "uuid" })
-    userId!: string;
+    storeId!: string;
 
-    @ManyToOne(() => User, { onDelete: "CASCADE" })
-    @JoinColumn({ name: "userId" })
-    user!: User;
+    @ManyToOne(() => Store, { onDelete: "CASCADE" })
+    @JoinColumn({ name: "storeId" })
+    store!: Store;
 
     @Column({ type: "varchar", length: 255 })
     name!: string;
@@ -68,4 +68,3 @@ export class Product {
     @UpdateDateColumn({ type: "timestamptz" })
     updatedAt!: Date;
 }
-
