@@ -1,5 +1,5 @@
 import { Env } from "./config/env";
-import { initializeDataSource } from "./infrastructure/database/typeorm/data-source";
+import { initializeDataSource, closeDataSource } from "./infrastructure/database/typeorm/data-source";
 import { getRedisClient, closeRedisClient } from "./infrastructure/redis/client";
 import app from "./app";
 import logger from "./infrastructure/logging/logger";
@@ -20,20 +20,23 @@ const NODE_ENV = Env.NODE_ENV || 'development';
         const shutdown = async (signal: string) => {
             logger.info(`Received ${signal}. Shutting down gracefully...`);
 
-            try {
-                await closeRedisClient();
-            } catch (err) {
-                logger.error("Error closing Redis connection", {
-                    error: err instanceof Error ? err.message : "Unknown error",
-                });
-            }
-
-            server.close((err?: Error) => {
+            server.close(async (err?: Error) => {
                 if (err) {
-                    logger.error("Error during server close:", err);
-                    process.exit(1);
+                    logger.error("Error during closing HTTP server:", err);
+                } else {
+                    logger.info("HTTP server closed (no more new connections).");
                 }
-                logger.info("Server closed. Exiting process.");
+
+                try {
+                    await closeDataSource();
+                    await closeRedisClient();
+                } catch (infraErr) {
+                    logger.error("Error closing infrastructure connections", {
+                        error: infraErr instanceof Error ? infraErr.message : "Unknown error",
+                    });
+                }
+
+                logger.info("Graceful shutdown completed. Exiting process.");
                 process.exit(0);
             });
 

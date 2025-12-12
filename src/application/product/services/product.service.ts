@@ -1,43 +1,28 @@
 import { ProductRepository } from "../repositories/product.repository";
-import { UserRepository } from "../../user/repositories/user.repository";
+import { StoreRepository } from "../../store/repositories/store.repository";
 import { CreateProductDTO, ProductResponseDTO } from "../dto/product.dto";
-import { UserAccountType } from "../../../domain/enums/UserAccountType";
 import { ImageService } from "../../../infrastructure/upload/image.service";
 import logger from "../../../infrastructure/logging/logger";
+import { ProductCategory } from "../../../domain/enums/ProductCategory";
 
 export class ProductService {
     constructor(
         private readonly productRepo: ProductRepository,
-        private readonly userRepo: UserRepository
+        private readonly storeRepo: StoreRepository
     ) { }
 
     async createProduct(userId: string, dto: CreateProductDTO): Promise<ProductResponseDTO> {
-        const user = await this.userRepo.findById(userId);
-        if (!user) {
-            throw new Error("USER_NOT_FOUND");
+        // Find store by userId
+        const store = await this.storeRepo.findByUserId(userId);
+        if (!store) {
+            throw new Error("STORE_NOT_FOUND");
         }
 
-        if (user.accountType !== UserAccountType.PENJUAL) {
-            logger.warn(`Non-seller user ${userId} attempted to create product`);
-            throw new Error("SELLER_ONLY");
-        }
-
-        const productData: {
-            userId: string;
-            name: string;
-            category: typeof dto.category;
-            subCategoryId?: string;
-            price: number;
-            priceUnit: typeof dto.priceUnit;
-            priceUnitAmount: number;
-            stock: number;
-            stockUnit: typeof dto.stockUnit;
-            imagePath: string;
-            description?: string;
-        } = {
-            userId,
+        const productData: Partial<import("../../../infrastructure/database/typeorm/entities/Product").Product> = {
+            storeId: store.id,
             name: dto.name.trim(),
             category: dto.category,
+            subCategoryId: dto.subCategoryId,
             price: dto.price,
             priceUnit: dto.priceUnit,
             priceUnitAmount: dto.priceUnitAmount,
@@ -50,17 +35,37 @@ export class ProductService {
             productData.description = dto.description.trim();
         }
 
-        if (dto.subCategoryId) {
-            productData.subCategoryId = dto.subCategoryId;
-        }
-
         const product = await this.productRepo.createAndSave(productData);
 
-        logger.info(`Product created by user ${userId}: ${product.id}`);
+        logger.info(`Product created by store ${store.id}: ${product.id}`);
 
+        return this.mapToDTO(product);
+    }
+
+    async getProductsByUser(userId: string): Promise<ProductResponseDTO[]> {
+        // Find store by userId first
+        const store = await this.storeRepo.findByUserId(userId);
+        if (!store) {
+            return [];
+        }
+
+        const products = await this.productRepo.findByStoreId(store.id);
+        return products.map(product => this.mapToDTO(product));
+    }
+
+    async getAllProducts(category?: ProductCategory): Promise<ProductResponseDTO[]> {
+        const products = category
+            ? await this.productRepo.findByCategory(category)
+            : await this.productRepo.findAll();
+
+        return products.map(product => this.mapToDTO(product));
+    }
+
+    private mapToDTO(product: any): ProductResponseDTO {
         return {
             id: product.id,
-            userId: product.userId,
+            storeId: product.storeId,
+            storeName: product.store?.name || "Unknown Store",
             name: product.name,
             description: product.description,
             category: product.category,
@@ -76,51 +81,5 @@ export class ProductService {
             createdAt: product.createdAt,
             updatedAt: product.updatedAt,
         };
-    }
-
-    async getProductsByUser(userId: string): Promise<ProductResponseDTO[]> {
-        const products = await this.productRepo.findByUserId(userId);
-
-        return products.map((product) => ({
-            id: product.id,
-            userId: product.userId,
-            name: product.name,
-            description: product.description,
-            category: product.category,
-            subCategoryId: product.subCategoryId,
-            subCategoryName: product.subCategory?.name,
-            price: product.price,
-            priceUnit: product.priceUnit,
-            priceUnitAmount: product.priceUnitAmount,
-            stock: product.stock,
-            stockUnit: product.stockUnit,
-            imagePath: product.imagePath,
-            imageUrl: ImageService.getImageUrl(product.imagePath),
-            createdAt: product.createdAt,
-            updatedAt: product.updatedAt,
-        }));
-    }
-
-    async getAllProducts(): Promise<ProductResponseDTO[]> {
-        const products = await this.productRepo.findAll();
-
-        return products.map((product) => ({
-            id: product.id,
-            userId: product.userId,
-            name: product.name,
-            description: product.description,
-            category: product.category,
-            subCategoryId: product.subCategoryId,
-            subCategoryName: product.subCategory?.name,
-            price: product.price,
-            priceUnit: product.priceUnit,
-            priceUnitAmount: product.priceUnitAmount,
-            stock: product.stock,
-            stockUnit: product.stockUnit,
-            imagePath: product.imagePath,
-            imageUrl: ImageService.getImageUrl(product.imagePath),
-            createdAt: product.createdAt,
-            updatedAt: product.updatedAt,
-        }));
     }
 }

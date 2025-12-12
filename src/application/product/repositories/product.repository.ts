@@ -1,6 +1,7 @@
 import { Repository } from "typeorm";
 import { Product } from "../../../infrastructure/database/typeorm/entities/Product";
 import { AppDataSource } from "../../../infrastructure/database/typeorm/data-source";
+import { ProductCategory } from "../../../domain/enums/ProductCategory";
 
 export class ProductRepository {
     private repo: Repository<Product>;
@@ -12,21 +13,29 @@ export class ProductRepository {
     async findById(id: string): Promise<Product | null> {
         return await this.repo.findOne({
             where: { id },
-            relations: ["subCategory"],
+            relations: ["subCategory", "store"],
         });
     }
 
-    async findByUserId(userId: string): Promise<Product[]> {
+    async findByStoreId(storeId: string): Promise<Product[]> {
         return await this.repo.find({
-            where: { userId },
-            relations: ["subCategory"],
+            where: { storeId },
+            relations: ["subCategory", "store"],
             order: { createdAt: "DESC" },
         });
     }
 
     async findAll(): Promise<Product[]> {
         return await this.repo.find({
-            relations: ["subCategory"],
+            relations: ["subCategory", "store"],
+            order: { createdAt: "DESC" },
+        });
+    }
+
+    async findByCategory(category: ProductCategory): Promise<Product[]> {
+        return await this.repo.find({
+            where: { category },
+            relations: ["subCategory", "store"],
             order: { createdAt: "DESC" },
         });
     }

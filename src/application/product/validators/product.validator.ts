@@ -10,11 +10,11 @@ export const createProductSchema = z.object({
         .max(2000, "Description must not exceed 2000 characters")
         .optional(),
     category: z.enum([ProductCategory.KERAJINAN, ProductCategory.BAHAN_BAKU]),
-    subCategoryId: z.string().uuid("Invalid sub-category ID"),
+    subCategoryId: z.uuid("Invalid sub-category ID"),
     price: z.coerce.number()
         .int("Price must be an integer")
         .positive("Price must be positive"),
-    priceUnit: z.enum([WeightUnit.GRAM, WeightUnit.KILOGRAM]).default(WeightUnit.KILOGRAM),
+    priceUnit: z.enum([WeightUnit.GRAM, WeightUnit.KILOGRAM, WeightUnit.PCS]).default(WeightUnit.KILOGRAM),
     priceUnitAmount: z.coerce.number()
         .int("Price unit amount must be an integer")
         .positive("Price unit amount must be positive")
@@ -22,6 +22,6 @@ export const createProductSchema = z.object({
     stock: z.coerce.number()
         .int("Stock must be an integer")
         .min(0, "Stock cannot be negative"),
-    stockUnit: z.enum([WeightUnit.GRAM, WeightUnit.KILOGRAM]).default(WeightUnit.KILOGRAM),
+    stockUnit: z.enum([WeightUnit.GRAM, WeightUnit.KILOGRAM, WeightUnit.PCS]).default(WeightUnit.KILOGRAM),
 });
 
