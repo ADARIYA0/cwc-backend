@@ -37,12 +37,12 @@ export class Product {
     category!: ProductCategory;
 
     @Index()
-    @Column({ type: "uuid", nullable: true })
-    subCategoryId?: string;
+    @Column({ type: "uuid" })
+    subCategoryId!: string;
 
-    @ManyToOne(() => SubCategory, { onDelete: "SET NULL", nullable: true })
+    @ManyToOne(() => SubCategory, { onDelete: "RESTRICT" })
     @JoinColumn({ name: "subCategoryId" })
-    subCategory?: SubCategory;
+    subCategory!: SubCategory;
 
     @Column({ type: "integer" })
     price!: number;

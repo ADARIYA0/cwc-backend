@@ -10,7 +10,7 @@ export const createProductSchema = z.object({
         .max(2000, "Description must not exceed 2000 characters")
         .optional(),
     category: z.enum([ProductCategory.KERAJINAN, ProductCategory.BAHAN_BAKU]),
-    subCategoryId: z.string().uuid("Invalid sub-category ID").optional(),
+    subCategoryId: z.string().uuid("Invalid sub-category ID"),
     price: z.coerce.number()
         .int("Price must be an integer")
         .positive("Price must be positive"),
