@@ -30,7 +30,6 @@ export const AppDataSource = new DataSource({
     synchronize: DatabaseConfig.synchronize,
     logging: DatabaseConfig.logging,
     entities: [path.join(__dirname, "entities/**/*.{ts,js}")],
-    migrations: [path.join(__dirname, "migrations/**/*.{ts,js}")],
     subscribers: [],
     extra: {
         ssl: sslOption

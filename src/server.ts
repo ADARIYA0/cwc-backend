@@ -11,12 +11,7 @@ const NODE_ENV = Env.NODE_ENV || 'development';
 (async () => {
     try {
         await initializeDataSource();
-        logger.info("Database initialization complete.");
-
         await getRedisClient();
-        logger.info("Redis initialization complete.");
-
-        logger.info("Starting server...");
 
         const server = app.listen(PORT, HOST, () => {
             logger.info(`Server running in ${NODE_ENV} mode on all interfaces (http://${HOST}:${PORT})`);
